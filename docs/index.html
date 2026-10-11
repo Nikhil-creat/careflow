@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="CareFlow: AI-powered hospital with instant triage, automatic booking confirmations and reminders."><meta name="theme-color" content="#0b7a6b"><meta property="og:title" content="CareFlow Hospital"><meta property="og:description" content="Describe your symptoms, get the right doctor and a confirmed appointment in seconds."><link rel="icon" href="icon.svg"><link rel="manifest" href="manifest.json"><script src="config.js"></script><title>CareFlow – AI Hospital Automation</title>
+<style>
+:root{--bg:#f3f7f6;--card:#fff;--ink:#14302c;--mut:#5d7873;--line:#d8e4e1;--acc:#0b7a6b;--acc2:#e8f4f1;--warn:#c2410c;--crit:#b91c1c;--ok:#15803d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--card:#16262388;--ink:#e3f1ee;--mut:#8fb0aa;--line:#2a403c;--acc:#3fc7b0;--acc2:#16322e;--warn:#fb923c;--crit:#f87171;--ok:#4ade80}}
+:root[data-theme="dark"]{--bg:#0e1a18;--card:#162623;--ink:#e3f1ee;--mut:#8fb0aa;--line:#2a403c;--acc:#3fc7b0;--acc2:#16322e;--warn:#fb923c;--crit:#f87171;--ok:#4ade80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif}
+header{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h1{font:700 20px/1.2 Georgia,"Times New Roman",serif;margin:0}
+h1 span{color:var(--acc)}
+nav{display:flex;gap:6px;overflow-x:auto;padding:12px 16px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:20px;font:inherit;cursor:pointer}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{padding:0 16px 40px;max-width:980px;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi b{display:block;font:700 26px Georgia,serif;color:var(--acc)}
+.kpi small{color:var(--mut)}
+h2{font:600 17px Georgia,serif;margin:18px 0 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select{flex:1 1 140px;padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;min-width:0}
+.btn{background:var(--acc);color:#fff;border:0;padding:9px 14px;border-radius:8px;font:inherit;cursor:pointer}
+.btn.s{background:var(--acc2);color:var(--acc);padding:5px 10px;font-size:13px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--mut);font-weight:600;font-size:13px}
+.tag{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;background:var(--acc2);color:var(--acc)}
+.tag.Critical{background:var(--crit);color:#fff}.tag.High{background:var(--warn);color:#fff}
+.tag.paid,.tag.ok{background:var(--ok);color:#fff}.tag.low{background:var(--crit);color:#fff}
+.beds{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.bed{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card)}
+.bed.occ{border-color:var(--warn)}
+.log{max-height:260px;overflow:auto;font-size:14px}
+.log div{padding:6px 0;border-bottom:1px dashed var(--line)}
+.log time{color:var(--mut);font-size:12px;margin-right:6px}
+.empty{color:var(--mut);padding:12px 0}
+.chatbox{height:300px;overflow:auto}.m{padding:8px 12px;border-radius:12px;margin:6px 0;max-width:85%}.m.me{background:var(--acc);color:#fff;margin-left:auto}.m.bot{background:var(--acc2)}.bar{height:8px;border-radius:4px;background:var(--acc)}.trace{font:13px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap}
+@media(min-width:900px){#portal{display:grid;grid-template-columns:210px minmax(0,1fr);align-items:start}header{grid-column:1/-1;padding:18px 24px 6px}nav{flex-direction:column;position:sticky;top:0;padding:12px 12px 12px 24px}nav button{text-align:left;border-radius:10px}main{max-width:1280px;width:100%;margin:0;padding:0 24px 40px}.grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}}
+@media(min-width:1500px){body{font-size:16px}}
+.chatbox{height:min(50dvh,440px)}
+.ov{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}.ov .card{max-width:460px;width:100%;max-height:92dvh;overflow:auto}a.btn{display:inline-block}
+@media print{header,nav,main{display:none!important}.ov{position:static;background:none}.btns{display:none}}
+:root{--hh:60px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--acc);color:#fff;padding:8px 14px;border-radius:8px;z-index:99}.skip:focus{left:8px}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}html{scroll-behavior:smooth}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:8px 16px;min-height:var(--hh);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.links{display:flex;gap:2px;overflow-x:auto;flex:1}.links a{color:var(--ink);text-decoration:none;padding:8px 10px;border-radius:8px;white-space:nowrap}.links a:hover{background:var(--acc2)}
+.brand{font:700 20px Georgia,serif;color:var(--ink);text-decoration:none}.brand b{color:var(--acc)}
+#portal nav{top:calc(var(--hh) + env(safe-area-inset-top,0px))}
+.sec{max-width:1180px;margin:auto;padding:40px 16px}.sec h2.t{font:700 clamp(24px,4vw,34px)/1.2 Georgia,serif;margin:0 0 8px}.lead{color:var(--mut);max-width:62ch}
+.hero{display:grid;gap:24px;align-items:center;padding-top:34px}@media(min-width:900px){.hero{grid-template-columns:1.25fr .75fr}}
+.hero h1{font:700 clamp(34px,6.5vw,60px)/1.05 Georgia,serif;margin:0 0 14px}
+.mesh{background:radial-gradient(60% 80% at 10% 0%,var(--acc2),transparent 70%),radial-gradient(40% 60% at 95% 15%,color-mix(in srgb,var(--acc) 20%,transparent),transparent 70%)}
+.g{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.live i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ok);margin-right:6px;animation:p 2s infinite}@keyframes p{50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:600}
+footer.f{border-top:1px solid var(--line);background:var(--card);margin-top:20px}footer .cols{padding:28px 16px;max-width:1180px;margin:auto}footer small{display:block;text-align:center;color:var(--mut);padding:0 16px 24px}footer a{color:var(--acc)}
+.big{padding:12px 22px;font-size:16px}.n{font:700 28px Georgia,serif;color:var(--acc)}
+</style></head><body>
+<a class="skip" href="#site">Skip to content</a>
+<header class="top"><a class="brand" href="#site" onclick="go('site')">Care<b>Flow</b></a>
+<div class="links" role="navigation" aria-label="Site"><a href="#services" onclick="go('site')">Services</a><a href="#how" onclick="go('site')">How it works</a><a href="#automation" onclick="go('site')">Automation</a><a href="#doctors" onclick="go('site')">Doctors</a><a href="#faq" onclick="go('site')">FAQ</a><a href="#contact" onclick="go('site')">Contact</a></div>
+<button class="btn s" onclick="theme()" aria-label="Toggle dark mode">◐</button><button class="btn s" onclick="go('app')">Staff portal</button><button class="btn" onclick="go('app','AI Assistant')">Book now</button></header>
+<div id="site">
+<section class="sec hero mesh" aria-labelledby="h"><div><h1 id="h">Care that plans itself.</h1><p class="lead">Describe how you feel. Our AI assistant finds the right department and doctor, books the slot, and sends you the date, time and hospital details in seconds.</p><p><button class="btn big" onclick="go('app','AI Assistant')">Book with the AI assistant</button> <button class="btn s big" onclick="go('app','Dashboard')">Explore the portal</button></p><p class="lead">Emergency? Call 108 or 112 now.</p></div><div class="g live" id="hs" aria-live="polite"></div></section>
+<section class="sec" id="services" aria-labelledby="sv"><h2 class="t" id="sv">Departments</h2><p class="lead">Six departments, one booking flow.</p><div class="cols"><div class="g"><b>Cardiology</b><p>Heart checks, ECG and follow-up care.</p></div><div class="g"><b>Orthopedics</b><p>Bones, joints and injury recovery.</p></div><div class="g"><b>Pediatrics</b><p>Child health and vaccinations.</p></div><div class="g"><b>Dermatology</b><p>Skin, hair and allergy care.</p></div><div class="g"><b>General Medicine</b><p>Fever, infections and everyday illness.</p></div><div class="g"><b>Diagnostics and Lab</b><p>Blood tests, X-ray and MRI with tracked reports.</p></div></div></section>
+<section class="sec" id="how" aria-labelledby="hw"><h2 class="t" id="hw">How it works</h2><div class="cols"><div class="g"><span class="n">1</span><p>Describe your symptoms to the assistant.</p></div><div class="g"><span class="n">2</span><p>AI triage picks the department and the least busy doctor.</p></div><div class="g"><span class="n">3</span><p>Your appointment is booked and a confirmation is ready to save, share or print.</p></div><div class="g"><span class="n">4</span><p>Reminders, lab updates and billing follow automatically.</p></div></div></section>
+<section class="sec" id="automation" aria-labelledby="au"><h2 class="t" id="au">Automation behind the scenes</h2><div class="cols"><div class="g"><b>Smart triage</b><p>Emergency detection and routing.</p></div><div class="g"><b>Bed allocation</b><p>ICU first for critical cases.</p></div><div class="g"><b>Confirmations</b><p>Calendar file, WhatsApp, SMS.</p></div><div class="g"><b>Reminders and rebooking</b><p>Missed visits move to the next slot.</p></div><div class="g"><b>Auto billing</b><p>Invoices on discharge or consultation.</p></div><div class="g"><b>Pharmacy reorder</b><p>Stock below threshold restocks itself.</p></div><div class="g"><b>Risk scoring</b><p>High-risk patients get nurse rounds.</p></div><div class="g"><b>Analytics and campaigns</b><p>Revenue forecast and campaign ROI.</p></div></div></section>
+<section class="sec" id="doctors" aria-labelledby="dc"><h2 class="t" id="dc">Our doctors</h2><div class="cols" id="docs"></div></section>
+<section class="sec" aria-labelledby="ts"><h2 class="t" id="ts">Sample patient feedback</h2><p class="lead">Fictional examples for this demo.</p><div class="cols"><div class="g">"Booked in under a minute and got the time and address instantly." <br><small>Asha, patient</small></div><div class="g">"The reminder saved me from missing my slot." <br><small>Ravi, patient</small></div><div class="g">"Beds and billing update on their own. Less paperwork." <br><small>Ward nurse</small></div></div></section>
+<section class="sec" id="faq" aria-labelledby="fq"><h2 class="t" id="fq">Questions</h2><details><summary>Is the assistant a doctor?</summary><p>No. It guides you to the right department. It does not diagnose or prescribe.</p></details><details><summary>What if it is an emergency?</summary><p>Call 108 or 112 or go to the nearest emergency room. The assistant tells you the same.</p></details><details><summary>How do I get my appointment details?</summary><p>After booking you get a card with date, time, hospital, doctor and reference. Save it to your calendar or share it on WhatsApp.</p></details><details><summary>Is my data safe?</summary><p>This demo keeps data only in your browser. Do not enter real patient data.</p></details></section>
+<section class="sec" id="contact" aria-labelledby="ct"><h2 class="t" id="ct">Contact</h2><div class="g" id="cc"></div></section>
+</div>
+<div id="portal" hidden><header><h1>Care<span>Flow</span> · Hospital Automation</h1><button class="btn s" onclick="reset()">Reset demo data</button></header>
+<nav id="nav"></nav><main id="main"></main></div>
+<footer class="f"><div class="cols"><div><b>CareFlow</b><p id="fc"></p></div><div><b>Explore</b><p><a href="#services" onclick="go('site')">Departments</a><br><a href="#faq" onclick="go('site')">FAQ</a><br><a href="#" onclick="go('app');return false">Staff portal</a></p></div><div><b>Emergency</b><p>Call 108 or 112.<br>Do not wait for an appointment.</p></div></div><small>Demo project with fictional data. Not medical advice. © 2026 CareFlow.</small></footer>
+<script>
+const DOCS=[{n:'Dr. Rao',d:'Cardiology'},{n:'Dr. Iyer',d:'Orthopedics'},{n:'Dr. Khan',d:'General Medicine'},{n:'Dr. Mehta',d:'General Medicine'},{n:'Dr. Singh',d:'Pediatrics'},{n:'Dr. Nair',d:'Dermatology'}];
+const RATE={ICU:9000,General:2500,Private:4500},CONSULT=500;
+const TABS=['Dashboard','AI Assistant','Agents','Analytics','Marketing','Patients','Appointments','Beds','Lab','Staff','Pharmacy','Billing','Settings'];
+let S,tab='Dashboard';
+function seed(){return{pid:3,bid:1,patients:[{id:1,name:'Asha Verma',age:54,complaint:'Chest pain',sev:'Critical',dept:'Cardiology',doc:'Dr. Rao',bed:null},{id:2,name:'Ravi Kumar',age:29,complaint:'Knee fracture',sev:'High',dept:'Orthopedics',doc:'Dr. Iyer',bed:null}],
+appts:[{id:1,pid:1,doc:'Dr. Rao',time:'09:00',done:false},{id:2,pid:2,doc:'Dr. Iyer',time:'09:30',done:false}],
+beds:[...Array(4)].map((_,i)=>({id:'ICU-'+(i+1),type:'ICU',pid:null,since:0})).concat([...Array(6)].map((_,i)=>({id:'G-'+(i+1),type:'General',pid:null,since:0})),[...Array(2)].map((_,i)=>({id:'P-'+(i+1),type:'Private',pid:null,since:0}))),
+meds:[{n:'Paracetamol 500mg',q:120,min:40,re:200},{n:'Amoxicillin 250mg',q:35,min:30,re:100},{n:'Insulin vial',q:18,min:15,re:50},{n:'Saline 500ml',q:60,min:25,re:150}],
+bills:[],log:[]}}
+function load(){try{S=JSON.parse(localStorage.getItem('careflow')||'null')}catch(e){}if(!S)S=seed();ext()}
+function save(){try{localStorage.setItem('careflow',JSON.stringify(S))}catch(e){}}
+function reset(){S=seed();save();render()}
+function note(t){S.log.unshift({t:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),m:t});S.log=S.log.slice(0,40)}
+function dept(c){c=c.toLowerCase();
+if(/chest|heart|bp|palpit/.test(c))return'Cardiology';
+if(/bone|fractur|knee|joint|back/.test(c))return'Orthopedics';
+if(/child|infant|baby|kid/.test(c))return'Pediatrics';
+if(/skin|rash|allerg/.test(c))return'Dermatology';return'General Medicine'}
+function pickDoc(d){const c=DOCS.filter(x=>x.d===d).map(x=>({n:x.n,l:S.appts.filter(a=>a.doc===x.n&&!a.done).length}));return c.sort((a,b)=>a.l-b.l)[0].n}
+function nextSlot(){const n=S.appts.length;const m=540+n*30;return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+function pname(id){const p=S.patients.find(p=>p.id===id);return p?p.name:'—'}
+function addPatient(){const f=id=>document.getElementById(id).value.trim();
+const name=esc(f('pn')),age=+f('pa'),c=esc(f('pc')),sev=f('ps');if(!name||!c){alert('Enter a name and complaint.');return}
+const d=dept(c),doc=pickDoc(d),id=S.pid++;
+S.patients.push({id,name,age:age||0,complaint:c,sev,dept:d,doc,bed:null,phone:esc(f('pp')),ins:f('pi')});
+S.appts.push({id:S.appts.length+1+Math.floor(Math.random()*1e4),pid:id,doc,...slot(),done:false});
+note(`Triaged ${name} → ${d}, assigned ${doc}, booked appointment`);
+if(sev==='Critical'){note(`Alert: critical case ${name} flagged for immediate admission`)}
+save();render();showConf(S.appts[S.appts.length-1])}
+function admit(pid){const p=S.patients.find(x=>x.id===pid);const t=p.sev==='Critical'?'ICU':'General';
+const b=S.beds.find(b=>b.type===t&&!b.pid)||S.beds.find(b=>b.type==='Private'&&!b.pid);
+if(!b){alert('No beds free. Discharge a patient first.');return}
+b.pid=pid;b.since=Date.now();p.bed=b.id;note(`Auto-allocated bed ${b.id} to ${p.name}`);save();render()}
+function discharge(bid){const b=S.beds.find(x=>x.id===bid);const p=S.patients.find(x=>x.id===b.pid);
+const days=Math.max(1,Math.round((Date.now()-b.since)/864e5));const amt=days*RATE[b.type]+CONSULT;
+S.bills.push({id:S.bills.length+1,pid:p.id,desc:`${days} day(s) ${b.type} + consultation`,amt,paid:false});
+note(`Discharged ${p.name}; invoice of ₹${amt} generated automatically`);p.bed=null;b.pid=null;save();render()}
+function complete(id){const a=S.appts.find(x=>x.id===id);a.done=true;const p=S.patients.find(x=>x.id===a.pid);
+if(!p.bed){S.bills.push({id:S.bills.length+1,pid:p.id,desc:'Outpatient consultation',amt:CONSULT,paid:false});note(`Consultation done for ${p.name}; ₹${CONSULT} billed`)}
+else note(`Consultation done for ${p.name} (billed on discharge)`);save();render()}
+function dispense(i){const m=S.meds[i];if(m.q<=0)return;m.q-=10;if(m.q<0)m.q=0;note(`Dispensed 10 × ${m.n}`);
+if(m.q<m.min){m.q+=m.re;note(`Auto-reorder placed: ${m.re} × ${m.n} (stock fell below ${m.min})`)}save();render()}
+function pay(id){S.bills.find(b=>b.id===id).paid=true;note(`Invoice #${id} marked paid`);save();render()}
+const tbl=(h,rows)=>rows.length?`<div class="scroll card"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')}</table></div>`:'<div class="empty">Nothing here yet.</div>';
+const V={
+Dashboard(){const occ=S.beds.filter(b=>b.pid).length,rev=S.bills.filter(b=>b.paid).reduce((a,b)=>a+b.amt,0),pend=S.bills.filter(b=>!b.paid).reduce((a,b)=>a+b.amt,0);
+return`<div class="grid"><div class="kpi"><b>${S.patients.length}</b><small>Registered patients</small></div><div class="kpi"><b>${S.appts.filter(a=>!a.done).length}</b><small>Open appointments</small></div><div class="kpi"><b>${S.beds.length-occ}/${S.beds.length}</b><small>Beds free</small></div><div class="kpi"><b>₹${rev}</b><small>Collected</small></div><div class="kpi"><b>₹${pend}</b><small>Pending</small></div><div class="kpi"><b>${S.meds.filter(m=>m.q<m.min*1.3).length}</b><small>Meds near reorder</small></div></div>
+<h2>Automation activity</h2><div class="card log">${S.log.length?S.log.map(l=>`<div><time>${l.t}</time>${l.m}</div>`).join(''):'<div class="empty">Register a patient to see automations run.</div>'}</div>`},
+Patients(){return`<h2>Register patient</h2><div class="row"><input id="pn" placeholder="Full name"><input id="pa" type="number" placeholder="Age"><input id="pc" placeholder="Complaint, e.g. chest pain"><input id="pp" placeholder="Phone"><select id="pi"><option>Self-pay</option><option>Ayushman Bharat</option><option>Private insurance</option></select><select id="ps"><option>Routine</option><option>High</option><option>Critical</option></select><button class="btn" onclick="addPatient()">Register and triage</button></div>
+<h2>Patients</h2>`+tbl(['Name','Complaint','Priority','Department','Doctor','Bed'],S.patients.map(p=>`<tr><td>${p.name} (${p.age})<br><small>${p.phone||''} ${p.ins||''}</small></td><td>${p.complaint}</td><td><span class="tag ${p.sev}">${p.sev}</span></td><td>${p.dept}</td><td>${p.doc}</td><td>${p.bed||`<button class="btn s" onclick="admit(${p.id})">Admit</button>`}</td></tr>`))},
+Appointments(){return`<h2>Appointments</h2>`+tbl(['Date','Time','Patient','Doctor','Status'],S.appts.slice().sort((a,b)=>a.time.localeCompare(b.time)).map(a=>`<tr><td>${a.date||'Today'}</td><td>${a.time}</td><td>${pname(a.pid)}</td><td>${a.doc}</td><td>${a.done?'<span class="tag ok">Done</span>':`<button class="btn s" onclick="complete(${a.id})">Complete</button>`}</td></tr>`))},
+Beds(){return`<h2>Ward overview</h2><div class="beds">${S.beds.map(b=>`<div class="bed ${b.pid?'occ':''}"><b>${b.id}</b><br><small>${b.type}</small><br>${b.pid?`${pname(b.pid)}<br><button class="btn s" onclick="discharge('${b.id}')">Discharge</button>`:'<span class="tag ok">Free</span>'}</div>`).join('')}</div>`},
+Pharmacy(){return`<h2>Inventory</h2>`+tbl(['Medicine','Stock','Reorder below','Action'],S.meds.map((m,i)=>`<tr><td>${m.n}</td><td>${m.q} ${m.q<m.min*1.3?'<span class="tag low">Low</span>':''}</td><td>${m.min}</td><td><button class="btn s" onclick="dispense(${i})">Dispense 10</button></td></tr>`))},
+Billing(){return`<h2>Invoices</h2>`+tbl(['#','Patient','Details','Amount','Status'],S.bills.map(b=>`<tr><td>${b.id}</td><td>${pname(b.pid)}</td><td>${b.desc}</td><td>₹${b.amt}</td><td>${b.paid?'<span class="tag paid">Paid</span>':`<button class="btn s" onclick="pay(${b.id})">Mark paid</button>`}</td></tr>`))}};
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let chat=[{r:'bot',t:'Hello! Describe your symptoms or ask about doctors and beds. I will guide you to the right department.'}],ctx={},trace=[];
+const api=()=>{try{return localStorage.getItem('cf_api')||''}catch(e){return''}};
+function setApi(){const v=prompt('Backend URL (leave blank for offline mode)',api());if(v!==null){try{localStorage.setItem('cf_api',v.trim())}catch(e){}render()}}
+function paint(){const b=document.getElementById('cb');if(b){b.innerHTML=chat.map(m=>`<div class="m ${m.r}">${esc(m.t)}</div>`).join('');b.scrollTop=b.scrollHeight}}
+const EMERG=/chest pain|can.?t breathe|breathless|unconscious|stroke|heavy bleeding|seizure|overdose/i;
+function quick(name,c,ph){const d=dept(c),doc=pickDoc(d),id=S.pid++;S.patients.push({id,name:esc(name),age:0,complaint:esc(c),sev:'Routine',dept:d,doc,bed:null,phone:esc(ph||'')});S.appts.push({id:S.appts.length+1+Math.floor(Math.random()*1e4),pid:id,doc,...slot(),done:false});note('Chatbot booked '+name+' with '+doc);save();const a=S.appts[S.appts.length-1];setTimeout(()=>showConf(a),300);return confText(a)}
+function localBot(q){
+if(EMERG.test(q))return'This may be an emergency. Call 108 or 112 now, or go to the nearest emergency room. Do not wait for an appointment.';
+if(/^\s*book/i.test(q)&&ctx.c){const n=prompt('Your name?');return n?quick(n,ctx.c):'Booking cancelled.'}
+if(/bed/i.test(q))return S.beds.filter(b=>!b.pid).length+' of '+S.beds.length+' beds are free right now.';
+ctx.c=q;const d=dept(q);return'Suggested path: '+d+' with '+pickDoc(d)+'. Reply "book" to schedule. This is guidance, not a diagnosis.'}
+async function ask(){const i=document.getElementById('cq'),q=i.value.trim();if(!q)return;i.value='';chat.push({r:'me',t:q});paint();let a;const u=api();
+if(EMERG.test(q))a=localBot(q);else if(gkey()){try{a=await groq(q)}catch(e){a='AI service error: '+e.message+'. Using offline mode. '+localBot(q)}}
+else if(u){try{const r=await fetch(u.replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})});a=(await r.json()).reply}catch(e){a='Backend unreachable, using offline mode. '+localBot(q)}}
+if(!a)a=localBot(q);chat.push({r:'bot',t:a});paint();site()}
+const risk=p=>(p.age>60?25:0)+({Routine:10,High:35,Critical:60}[p.sev]||10)+(p.bed?0:5);
+function runAgents(){trace=[];const T=(a,m)=>{trace.push('['+a+'] '+m);note(a+' agent: '+m)};
+S.patients.filter(p=>p.sev==='Critical'&&!p.bed).forEach(p=>{T('Bed','Thought: '+p.name+' is critical with no bed. Action: allocate ICU.');const b=S.beds.find(b=>b.type==='ICU'&&!b.pid);if(b){b.pid=p.id;b.since=Date.now();p.bed=b.id;T('Bed','Observation: assigned '+b.id)}else T('Bed','Observation: no ICU bed, escalated to duty manager')});
+S.meds.filter(m=>m.q<m.min*1.3).forEach(m=>{T('Pharmacy','Thought: '+m.n+' at '+m.q+', near threshold. Action: pre-order.');m.q+=m.re;T('Pharmacy','Observation: stock now '+m.q)});
+S.bills.filter(b=>!b.paid&&!b.rem).forEach(b=>{b.rem=1;T('Billing','Invoice #'+b.id+' pending ₹'+b.amt+', reminder queued')});
+const today=new Date().toISOString().slice(0,10);S.appts.filter(a=>!a.done&&a.date&&a.date<today&&!a.ns).forEach(a=>{Object.assign(a,slot(),{ns:1,rem:0});T('NoShow','Missed visit for '+pname(a.pid)+' rebooked to '+a.date+' '+a.time)});
+S.appts.filter(a=>!a.done&&!a.rem).forEach(a=>{a.rem=1;T('Reminder','Reminder queued for '+pname(a.pid)+' ('+(a.date||'today')+' '+a.time+') via WhatsApp/SMS')});
+S.patients.filter(p=>risk(p)>=60&&!p.rn).forEach(p=>{p.rn=1;T('Risk','High risk '+p.name+' ('+risk(p)+'), nurse round scheduled')});
+if(!trace.length)T('Orchestrator','All systems nominal, nothing to do');save();render()}
+V['AI Assistant']=()=>`<h2>AI care navigator</h2><div class="row"><button class="btn s" onclick="setApi()">${api()?'Backend connected (change)':'Offline mode (connect backend)'}</button></div><div id="cb" class="card chatbox"></div><div class="row" style="margin-top:10px"><input id="cq" placeholder="Describe symptoms, or ask about beds" onkeydown="if(event.key==='Enter')ask()"><button class="btn" onclick="ask()">Send</button></div><p class="empty">Guidance only, not a diagnosis. In an emergency call 108 or 112.</p>`;
+V['Agents']=()=>`<h2>Autonomous agents</h2><div class="row"><button class="btn" onclick="runAgents()">Run all agents</button><button class="btn s" onclick="toggleAuto()">${auto?'Auto mode ON (stop)':'Start auto mode'}</button><button class="btn s" onclick="summary()">Daily summary</button><button class="btn s" onclick="exportCSV()">Export CSV</button></div><div class="card trace">${trace.length?esc(trace.join('\n')):'Agents for beds, pharmacy, billing and patient risk plan, act and report here.'}</div><h2>Active automation rules</h2><div class="card"><ul><li>Critical patients get ICU beds first</li><li>Low stock triggers a restock order</li><li>New bookings get a confirmation and a reminder</li><li>Missed appointments are rebooked</li><li>Unpaid invoices trigger a reminder</li><li>High-risk patients get nurse rounds</li></ul></div><h2>Patient risk scores</h2>`+tbl(['Patient','Score','Level'],S.patients.map(p=>{const r=Math.min(100,risk(p));return`<tr><td>${p.name}</td><td style="width:50%"><div class="bar" style="width:${r}%"></div></td><td>${r}</td></tr>`}));
+
+function ext(){S.cfg=S.cfg||{hosp:'CareFlow Multispeciality Hospital',addr:'12 Health Avenue, Hyderabad, India',phone:'+91 00000 00000',model:'llama-3.3-70b-versatile'};S.camps=S.camps||[{n:'Free diabetes camp',ch:'SMS',sent:1200,conv:96,cost:6000},{n:'Cardiac health check',ch:'Email',sent:800,conv:44,cost:2000},{n:'Maternity package',ch:'Instagram',sent:5000,conv:120,cost:15000}];
+S.leads=S.leads||{Website:320,Referral:140,Camp:96,'Walk-in':210};S.labs=S.labs||[{id:1,pid:1,test:'ECG',st:'Pending'},{id:2,pid:2,test:'X-Ray',st:'Reported'}];
+S.rev=S.rev||[42,51,48,63,58,71,66];S.nurses=S.nurses||[{n:'Nurse Priya',w:'ICU',sh:'Night'},{n:'Nurse Anil',w:'General',sh:'Day'},{n:'Nurse Sara',w:'General',sh:'Night'}]}
+const AVGV=3500;
+function bars(o){const m=Math.max(1,...Object.values(o));return Object.entries(o).map(([k,v])=>`<div style="margin:6px 0">${k} (${v})<div class="bar" style="width:${v/m*100}%"></div></div>`).join('')||'<div class="empty">No data yet.</div>'}
+const spark=a=>{const m=Math.max(...a),n=Math.min(...a);const pts=a.map((v,i)=>(10+i*280/(a.length-1))+','+(70-(v-n)/((m-n)||1)*60)).join(' ');return`<svg viewBox="0 0 300 80" style="width:100%"><polyline points="${pts}" fill="none" stroke="var(--acc)" stroke-width="3"/></svg>`};
+function draft(){const g=i=>document.getElementById(i).value,sv=g('mn')||'health check-up';document.getElementById('mmsg').value=`Hi! CareFlow Hospital is offering ${sv}. Book in 30 seconds with our AI assistant. Limited slots this week.${g('mch')==='Instagram'?' #HealthFirst #CareFlow':' Reply STOP to opt out.'}`}
+function addCamp(){const g=i=>document.getElementById(i).value,n=g('mn').trim();if(!n)return alert('Enter a campaign name.');S.camps.push({n:esc(n),ch:g('mch'),sent:+g('ms')||0,conv:+g('mc')||0,cost:+g('mk')||0});note('Campaign launched: '+n);save();render()}
+function addLab(){const pid=+document.getElementById('lp').value;if(!pid)return alert('Register a patient first.');S.labs.push({id:S.labs.length+1,pid,test:document.getElementById('lt').value,st:'Pending'});note('Lab test ordered');save();render()}
+function nextLab(id){const l=S.labs.find(x=>x.id===id);l.st=l.st==='Pending'?'Collected':'Reported';if(l.st==='Reported')note('Lab report ready for '+pname(l.pid)+', patient notified');save();render()}
+V.Analytics=()=>{const occ=Math.round(S.beds.filter(b=>b.pid).length/S.beds.length*100),d=S.rev,f=Math.round(d[d.length-1]+(d[d.length-1]-d[0])/(d.length-1)),dm={},im={};
+S.patients.forEach(p=>{dm[p.dept]=(dm[p.dept]||0)+1;const k=p.ins||'Self-pay';im[k]=(im[k]||0)+1});
+const avg=S.patients.length?Math.round(S.patients.reduce((a,p)=>a+risk(p),0)/S.patients.length):0;
+return`<div class="grid"><div class="kpi"><b>${occ}%</b><small>Bed occupancy</small></div><div class="kpi"><b>${avg}</b><small>Avg patient risk</small></div><div class="kpi"><b>₹${f}k</b><small>Forecast tomorrow</small></div><div class="kpi"><b>${S.labs.filter(l=>l.st!=='Reported').length}</b><small>Labs in progress</small></div></div>
+<h2>Revenue, last 7 days (₹ thousand)</h2><div class="card">${spark(d)}<small>Forecast uses a simple trend model.</small></div>
+<h2>Patients by department</h2><div class="card">${bars(dm)}</div><h2>Insurance mix</h2><div class="card">${bars(im)}</div>`};
+V.Marketing=()=>{const sent=S.camps.reduce((a,c)=>a+c.sent,0),cv=S.camps.reduce((a,c)=>a+c.conv,0),cost=S.camps.reduce((a,c)=>a+c.cost,0);
+return`<div class="grid"><div class="kpi"><b>${sent}</b><small>Messages sent</small></div><div class="kpi"><b>${cv}</b><small>Appointments won</small></div><div class="kpi"><b>₹${cost?Math.round((cv*AVGV-cost)/1000):0}k</b><small>Net return</small></div></div>
+<h2>Campaigns</h2>`+tbl(['Campaign','Channel','Sent','Won','Rate','ROI'],S.camps.map(c=>`<tr><td>${c.n}</td><td>${c.ch}</td><td>${c.sent}</td><td>${c.conv}</td><td>${c.sent?(c.conv/c.sent*100).toFixed(1):0}%</td><td>${c.cost?Math.round((c.conv*AVGV-c.cost)/c.cost*100):0}%</td></tr>`))+
+`<h2>Lead sources</h2><div class="card">${bars(S.leads)}</div><h2>Patient segments</h2><div class="grid"><div class="kpi"><b>${S.patients.filter(p=>risk(p)>=60).length}</b><small>High-risk follow-ups</small></div><div class="kpi"><b>${S.patients.filter(p=>p.ins&&p.ins!=='Self-pay').length}</b><small>Insured patients</small></div><div class="kpi"><b>${S.bills.filter(b=>!b.paid).length}</b><small>Payment reminders due</small></div></div>
+<h2>New campaign</h2><div class="row"><input id="mn" placeholder="Offer, e.g. free BP check"><select id="mch"><option>SMS</option><option>Email</option><option>Instagram</option><option>WhatsApp</option></select><input id="ms" type="number" placeholder="Audience size"><input id="mc" type="number" placeholder="Expected bookings"><input id="mk" type="number" placeholder="Cost ₹"></div><div class="row"><input id="mmsg" placeholder="Message draft"><button class="btn s" onclick="draft()">Draft message</button><button class="btn" onclick="addCamp()">Launch</button></div>`};
+V.Lab=()=>`<h2>Order test</h2><div class="row"><select id="lp">${S.patients.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select><select id="lt"><option>Blood count</option><option>ECG</option><option>X-Ray</option><option>MRI</option><option>Urine test</option></select><button class="btn" onclick="addLab()">Order</button></div><h2>Lab queue</h2>`+tbl(['Patient','Test','Status',''],S.labs.map(l=>`<tr><td>${pname(l.pid)}</td><td>${l.test}</td><td><span class="tag ${l.st==='Reported'?'ok':''}">${l.st}</span></td><td>${l.st==='Reported'?'':`<button class="btn s" onclick="nextLab(${l.id})">Advance</button>`}</td></tr>`));
+V.Staff=()=>`<h2>Doctors</h2>`+tbl(['Doctor','Department','Open cases','Load'],DOCS.map(x=>{const n=S.appts.filter(a=>a.doc===x.n&&!a.done).length;return`<tr><td>${x.n}</td><td>${x.d}</td><td>${n}</td><td style="width:30%"><div class="bar" style="width:${Math.min(100,n*25)}%"></div></td></tr>`}))+`<h2>Nursing roster</h2>`+tbl(['Nurse','Ward','Shift'],S.nurses.map(n=>`<tr><td>${n.n}</td><td>${n.w}</td><td>${n.sh}</td></tr>`));
+
+const un=s=>String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&amp;/g,'&');
+const gkey=()=>{let k='';try{k=localStorage.getItem('cf_groq')||''}catch(e){}return k||(window.CF_CONFIG&&window.CF_CONFIG.groqKey)||''};
+function slot(){const n=S.appts.length,d=new Date();d.setDate(d.getDate()+1+Math.floor(n/16));const m=540+(n%16)*30,z=x=>String(x).padStart(2,'0');return{date:d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()),time:z(Math.floor(m/60))+':'+z(m%60)}}
+function confText(a){const p=S.patients.find(x=>x.id===a.pid)||{},d=a.date||new Date().toISOString().slice(0,10),ds=new Date(d+'T'+a.time+':00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+return['Appointment confirmed','Ref: CF-'+a.id,'Patient: '+un(p.name||''),'Hospital: '+S.cfg.hosp,'Address: '+S.cfg.addr,'Department: '+(p.dept||''),'Doctor: '+a.doc,'Date: '+ds,'Time: '+a.time,'Helpline: '+S.cfg.phone,'Please arrive 15 minutes early and carry a photo ID and previous reports.'].join('\n')}
+function ics(a){const d=new Date((a.date||new Date().toISOString().slice(0,10))+'T'+a.time+':00'),e=new Date(d.getTime()+18e5),z=n=>String(n).padStart(2,'0'),f=x=>x.getFullYear()+z(x.getMonth()+1)+z(x.getDate())+'T'+z(x.getHours())+z(x.getMinutes())+'00';
+const c=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CareFlow//EN','BEGIN:VEVENT','UID:cf-'+a.id+'@careflow','DTSTAMP:'+f(new Date()),'DTSTART:'+f(d),'DTEND:'+f(e),'SUMMARY:Appointment with '+a.doc+' at '+S.cfg.hosp,'LOCATION:'+S.cfg.addr.replace(/,/g,'\\,'),'DESCRIPTION:Ref CF-'+a.id,'BEGIN:VALARM','TRIGGER:-PT1H','ACTION:DISPLAY','DESCRIPTION:Appointment reminder','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([c],{type:'text/calendar'}));l.download='appointment-CF-'+a.id+'.ics';l.click()}
+function showConf(a){const t=confText(a),p=S.patients.find(x=>x.id===a.pid)||{},o=document.createElement('div');o.className='ov';
+o.innerHTML=`<div class="card"><h2 style="margin-top:0">Booking confirmed ✅</h2><div style="white-space:pre-line">${esc(t)}</div><div class="row btns" style="margin-top:12px"><button class="btn" id="c1">Add to calendar</button><a class="btn s" target="_blank" rel="noopener" style="text-decoration:none" href="https://wa.me/?text=${encodeURIComponent(t)}">WhatsApp</a>${p.phone?`<a class="btn s" style="text-decoration:none" href="sms:${un(p.phone)}?body=${encodeURIComponent(t)}">SMS</a>`:''}<button class="btn s" id="c2">Copy</button><button class="btn s" onclick="window.print()">Print</button><button class="btn s" id="c3">Close</button></div></div>`;
+document.body.appendChild(o);o.querySelector('#c1').onclick=()=>ics(a);o.querySelector('#c2').onclick=()=>{try{navigator.clipboard.writeText(t)}catch(e){}};o.querySelector('#c3').onclick=()=>o.remove();note('Confirmation prepared for '+un(p.name||'patient')+' (WhatsApp, SMS, calendar)');save()}
+const GT=[{type:'function',function:{name:'triage',description:'Route symptoms to a department and doctor',parameters:{type:'object',properties:{symptoms:{type:'string'}},required:['symptoms']}}},{type:'function',function:{name:'bed_availability',description:'Number of free beds',parameters:{type:'object',properties:{}}}},{type:'function',function:{name:'book_appointment',description:'Book an appointment once you know the patient name and symptoms',parameters:{type:'object',properties:{name:{type:'string'},symptoms:{type:'string'},phone:{type:'string'}},required:['name','symptoms']}}}];
+function tool(n,a){if(n==='triage'){const d=dept(a.symptoms||'');return{department:d,doctor:pickDoc(d)}}if(n==='bed_availability')return{free:S.beds.filter(b=>!b.pid).length};if(n==='book_appointment')return{booked:true,confirmation:quick(a.name||'Patient',a.symptoms||'',a.phone)};return{}}
+async function groq(){const msgs=[{role:'system',content:'You are the patient navigator for '+S.cfg.hosp+'. Use tools to route patients and book appointments. Ask for name and phone before booking. Never diagnose or prescribe. Be brief. After booking, tell the patient the confirmation details.'},...chat.slice(-8).map(m=>({role:m.r==='me'?'user':'assistant',content:m.t}))];
+for(let i=0;i<4;i++){const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+gkey()},body:JSON.stringify({model:S.cfg.model,messages:msgs,tools:GT,max_tokens:500})});const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'Groq error');const m=d.choices[0].message;if(!m.tool_calls)return m.content;msgs.push(m);for(const t of m.tool_calls){let res;try{res=tool(t.function.name,JSON.parse(t.function.arguments||'{}'))}catch(e){res={error:String(e)}}msgs.push({role:'tool',tool_call_id:t.id,content:JSON.stringify(res)})}}return'Please try again.'}
+function saveCfg(){const g=i=>document.getElementById(i).value.trim();S.cfg={hosp:g('sh')||S.cfg.hosp,addr:g('sa')||S.cfg.addr,phone:g('sp')||S.cfg.phone,model:g('sm')||S.cfg.model};try{localStorage.setItem('cf_groq',g('sk'))}catch(e){}note('Settings saved');save();render()}
+V.Settings=()=>`<h2>Hospital details</h2><div class="row"><input id="sh" value="${esc(S.cfg.hosp)}"><input id="sa" value="${esc(S.cfg.addr)}"><input id="sp" value="${esc(S.cfg.phone)}"></div><h2>Free Groq AI</h2><p class="empty">Get a free key at console.groq.com/keys and paste it here. It stays in this browser only.</p><div class="row"><input id="sk" type="password" placeholder="gsk_..." value="${esc(gkey())}"><select id="sm">${['llama-3.3-70b-versatile','llama-3.1-8b-instant'].map(m=>`<option ${m===S.cfg.model?'selected':''}>${m}</option>`).join('')}</select><button class="btn" onclick="saveCfg()">Save</button></div><p class="empty">AI status: ${gkey()?'Groq connected':'offline rule-based mode'}</p>`;
+
+let auto=null;
+function toggleAuto(){if(auto){clearInterval(auto);auto=null;render()}else{auto=setInterval(runAgents,20000);runAgents()}}
+function summary(){const occ=S.beds.filter(b=>b.pid).length;trace=['[Report] '+S.patients.length+' patients, '+occ+'/'+S.beds.length+' beds occupied','[Report] '+S.appts.filter(a=>!a.done).length+' open appointments, '+S.labs.filter(l=>l.st!=='Reported').length+' labs in progress','[Report] Billed ₹'+S.bills.reduce((a,b)=>a+b.amt,0)+', collected ₹'+S.bills.filter(b=>b.paid).reduce((a,b)=>a+b.amt,0)];note('Daily summary generated');save();render()}
+function exportCSV(){const q=v=>{v=un(v==null?'':v);if(/^[=+\-@]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'};const r=[['Name','Age','Phone','Insurance','Complaint','Priority','Department','Doctor','Bed','Risk']].concat(S.patients.map(p=>[p.name,p.age,p.phone,p.ins,p.complaint,p.sev,p.dept,p.doc,p.bed,risk(p)]));const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([r.map(x=>x.map(q).join(',')).join('\n')],{type:'text/csv'}));l.download='careflow-patients.csv';l.click()}
+function go(v,t){document.getElementById('site').hidden=v!=='site';document.getElementById('portal').hidden=v!=='app';if(t)tab=t;render();if(v==='app')window.scrollTo(0,0)}
+function theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem('cf_theme',r.dataset.theme)}catch(e){}}
+function site(){const h=document.getElementById('hs');if(!h)return;const f=S.beds.filter(b=>!b.pid).length,sl=slot(),c=S.cfg;
+h.innerHTML=`<b><i></i>Live now</b><p>${f} of ${S.beds.length} beds free<br>${DOCS.length} doctors on duty<br>Next open slot: ${sl.date} ${sl.time}</p><button class="btn s" onclick="go('app','AI Assistant')">Check with the assistant</button>`;
+document.getElementById('docs').innerHTML=DOCS.map(d=>`<div class="g"><b>${d.n}</b><br>${d.d}<br><button class="btn s" onclick="go('app','AI Assistant')">Book</button></div>`).join('');
+const a=`<b>${esc(c.hosp)}</b><br>${esc(c.addr)}<br>Phone: <a href="tel:${esc(c.phone.replace(/\s/g,''))}">${esc(c.phone)}</a>`;document.getElementById('cc').innerHTML=a+'<br>Open 24 hours. Emergency: 108 or 112.';document.getElementById('fc').innerHTML=a}
+function render(){document.getElementById('nav').innerHTML=TABS.map(t=>`<button class="${t===tab?'on':''}" onclick="tab='${t}';render()">${t}</button>`).join('');
+document.getElementById('main').innerHTML=V[tab]();if(tab==='AI Assistant')paint()}
+(function(){try{const t=localStorage.getItem('cf_theme');if(t)document.documentElement.dataset.theme=t}catch(e){}})();load();render();if(location.hash==='#app')go('app');try{navigator.serviceWorker&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+</script></body></html>
