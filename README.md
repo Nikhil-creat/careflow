@@ -75,3 +75,6 @@ Landing site (header, hero with live status, departments, how it works, automati
    Optional: git config --global credential.helper store
 7. Repo > Settings > Pages > Source: GitHub Actions. Watch the Actions tab, then open https://YOUR-USERNAME.github.io/careflow/
 Update later: edit, then git add . && git commit -m "update" && git push
+
+## v5: branding and selling
+logo.svg, logo-dark.svg (and PNGs when available), app icon, privacy notice template, 404 page, demo-request button (set salesPhone or salesEmail in docs/config.js), Telugu/Hindi/English replies from the Groq agent. See sales/SALES-GUIDE.md.

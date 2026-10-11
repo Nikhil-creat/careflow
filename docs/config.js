@@ -1,3 +1,4 @@
-// Optional: paste a FREE Groq key to pre-enable AI for everyone who visits.
-// WARNING: anything here is public on GitHub Pages. Prefer pasting the key in the app Settings tab.
-window.CF_CONFIG={groqKey:""};
+// Set your sales contact so "Request a demo" opens WhatsApp or email.
+// salesPhone with country code, e.g. "91XXXXXXXXXX". Anything here is public.
+// groqKey: prefer pasting it in the app Settings tab instead.
+window.CF_CONFIG={groqKey:"",salesPhone:"",salesEmail:""};

@@ -1,1 +1,1 @@
-{"name":"CareFlow Hospital","short_name":"CareFlow","start_url":"./","display":"standalone","background_color":"#f3f7f6","theme_color":"#0b7a6b","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
+{"name": "CareFlow Hospital", "short_name": "CareFlow", "start_url": "./", "display": "standalone", "background_color": "#f3f7f6", "theme_color": "#0b7a6b", "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]}
