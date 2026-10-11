@@ -6,21 +6,21 @@ Demo project. Uses fictional data only. Never enter real patient data; it is not
 - Triage, bed, pharmacy and billing automations
 - Agents tab: bed, pharmacy, billing and risk agents (plan, act, observe) plus patient risk scores
 - AI care navigator chatbot: emergency detection, symptom to department routing, booking
-- FastAPI backend with a Claude tool-use agent loop (works without a key using rules)
+- FastAPI backend with a Groq (free) or Claude tool-use agent loop (works without a key using rules)
 - Docker, docker-compose, GitHub Actions, Render blueprint
 
 ## Structure
 docs/ (website) · backend/ (API) · docker-compose.yml · render.yaml · .github/workflows/deploy.yml
 
 ## Run locally
-cp .env.example .env   (add ANTHROPIC_API_KEY, optional)
+cp .env.example .env   (add GROQ_API_KEY, optional)
 docker compose up --build
 Website: http://localhost:8080 · API docs: http://localhost:8000/docs
 In the AI Assistant tab, tap "connect backend" and enter http://localhost:8000
 
 ## Deploy free
 1. Website (GitHub Pages): push to a new GitHub repo on branch main. Repo Settings > Pages > Source: GitHub Actions. Site goes live at https://USERNAME.github.io/REPO/
-2. Backend (Render free tier): render.com > New > Blueprint > pick the repo. Add ANTHROPIC_API_KEY if you want the LLM (paid API; skip for rule-based mode). First request after idle takes about 50 seconds.
+2. Backend (Render free tier): render.com > New > Blueprint > pick the repo. Add GROQ_API_KEY (free) for the LLM; skip for rule-based mode. First request after idle takes about 50 seconds.
 3. Connect: open the live site > AI Assistant > connect backend > paste the Render URL.
 4. Lock down: set CORS_ORIGINS to your Pages URL.
 
